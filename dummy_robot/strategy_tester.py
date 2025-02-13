@@ -51,7 +51,8 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
               'days': days, 'current_amount': robot.amount,
               'quantity': quantity, 'price': (total_value - robot.amount) / (quantity or 1), 'min_amount': min_amount,
               'max_amount': max_amount, 'min_total': min_total, 'max_total': max_total,
-              'from': min([_.date for _ in robot.deals]), 'to': max([_.date for _ in robot.deals]),
+              'from': min([_.date for _ in robot.deals]) if robot.deals else None,
+              'to': max([_.date for _ in robot.deals]) if robot.deals else None,
               'deals_count': len(robot.deals), 'df': pd.DataFrame(new_df)}
 
     return result
