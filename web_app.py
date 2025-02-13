@@ -21,7 +21,7 @@ def load_data(symbol):
 
 with st.sidebar:
     st.header("Assumptions:")
-    st.text_input("Ticker", key="ticker", value="BTCUSDT", help='Crypto ticker')
+    st.text_input("Ticker", key="ticker", value="BTC/USDT", help='Crypto ticker')
     st.number_input("Initial amount", key="amount", value=10000, help='Money amount')
     st.number_input("Buy rate", key="buy_rate", value=0.95, help='Buy rate')
     st.number_input("Profit rate", key="profit_rate", value=1.05, help='Profit rate')
