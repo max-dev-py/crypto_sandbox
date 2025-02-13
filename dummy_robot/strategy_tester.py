@@ -40,7 +40,7 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
     investment = amount - min_amount
     profit = robot.get_total_assets() - amount
     margin = profit / amount
-    modified_margin = profit / (investment or 1)
+    modified_margin = profit / (investment if investment > 0 else 1)
     total_value = robot.get_total_assets()
     quantity = robot.get_quantity()
     result = {'amount': amount, 'investment': investment, 'profit': profit, 'total_value': total_value,
