@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from dummy_robot.price_fetcher import get_df
+from dummy_robot.price_fetcher import get_ccxt_df
 from dummy_robot.strategy_tester import analyze_robot_trading
 from dummy_robot.cinco import CincoRobot
 
@@ -13,9 +13,9 @@ st.set_page_config(page_title='Crypto-looser strategy simulator!',
                    )
 
 
-# @st.cache_data  # 👈 Add the caching decorator
+@st.cache_data  # 👈 Add the caching decorator
 def load_data(symbol):
-    df = get_df(symbol=symbol)
+    df = get_ccxt_df(symbol=symbol)
     return df
 
 
@@ -32,8 +32,6 @@ with st.sidebar:
 df = load_data(
     symbol=st.session_state.ticker
 )
-
-st.write(df)
 
 norm_result = analyze_robot_trading(df,
                                     CincoRobot,
