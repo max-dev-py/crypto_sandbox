@@ -1,4 +1,5 @@
 import pandas as pd
+import datetime
 
 
 def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.05, save_rate=0, amount_rate=0.05):
@@ -51,8 +52,8 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
               'days': days, 'current_amount': robot.amount,
               'quantity': quantity, 'price': (total_value - robot.amount) / (quantity or 1), 'min_amount': min_amount,
               'max_amount': max_amount, 'min_total': min_total, 'max_total': max_total,
-              'from': min([_.date for _ in robot.deals]) if robot.deals else None,
-              'to': max([_.date for _ in robot.deals]) if robot.deals else None,
+              'from': min([_.date for _ in robot.deals]) if robot.deals else datetime.date.today(),
+              'to': max([_.date for _ in robot.deals]) if robot.deals else datetime.date.today() + datetime.timedelta(days=1),
               'deals_count': len(robot.deals), 'df': pd.DataFrame(new_df)}
 
     return result
