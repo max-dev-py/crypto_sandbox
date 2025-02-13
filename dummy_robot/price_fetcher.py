@@ -12,6 +12,7 @@ def get_df(symbol="BTCUSDT", interval="1d", limit=1000):
         "limit": limit
     }
     response = requests.get(url, params=params)
+    response.raise_for_status()
     data = response.json()
     df = pd.DataFrame(data, columns=[
         "timestamp", "open", "high", "low", "close", "volume", "close_time",

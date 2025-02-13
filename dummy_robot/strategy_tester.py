@@ -8,14 +8,14 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
     min_total, max_total = amount, amount
 
     robot = Robot(amount=min_amount, buy_rate=buy_rate, profit_rate=profit_rate,
-                       save_rate=save_rate, amount_rate=amount_rate)
+                  save_rate=save_rate, amount_rate=amount_rate)
 
     new_df = []
     for id, data in df.iterrows():
         if robot.apply(**data):
-            print(len(robot.deals), data.timestamp, data.close, robot.status)
-            print(robot.deals[-1], 'BUY' if robot.deals[-1].quantity > 0 else 'SELL')
-            print('___' * 20)
+            # print(len(robot.deals), data.timestamp, data.close, robot.status)
+            # print(robot.deals[-1], 'BUY' if robot.deals[-1].quantity > 0 else 'SELL')
+            # print('___' * 20)
             if robot.amount < min_amount:
                 min_amount = robot.amount
             if max_amount < robot.amount:
@@ -53,8 +53,8 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
               'quantity': quantity, 'price': (total_value - robot.amount) / (quantity or 1), 'min_amount': min_amount,
               'max_amount': max_amount, 'min_total': min_total, 'max_total': max_total,
               'from': min([_.date for _ in robot.deals]) if robot.deals else datetime.date.today(),
-              'to': max([_.date for _ in robot.deals]) if robot.deals else datetime.date.today() + datetime.timedelta(days=1),
+              'to': max([_.date for _ in robot.deals]) if robot.deals else datetime.date.today() + datetime.timedelta(
+                  days=1),
               'deals_count': len(robot.deals), 'df': pd.DataFrame(new_df)}
 
     return result
-
