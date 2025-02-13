@@ -23,11 +23,12 @@ with st.sidebar:
     st.header("Assumptions:")
     st.text_input("Ticker", key="ticker", value="BTC/USDT", help='Crypto ticker')
     st.number_input("Initial amount", key="amount", value=10000, help='Money amount')
-    st.number_input("Buy rate", key="buy_rate", value=0.95, help='Buy rate')
-    st.number_input("Profit rate", key="profit_rate", value=1.05, help='Profit rate')
-    st.number_input("Save rate", key="save_rate", value=0.0005, format='%.5f',
-                    help='Which part of crypto-currency will not be sold.')
-    st.number_input("Investment rate", key="amount_rate", value=0.05, help='Which part of amount will be invested.')
+    st.number_input("Buy rate", key="buy_rate", value=5.0, help='Buy rate.%', format='%.3f')
+    st.number_input("Profit rate", key="profit_rate", value=5.0, help='Profit rate%', format='%.3f')
+    st.number_input("Save rate", key="save_rate", value=10.0, format='%.3f',
+                    help='Which part of crypto-currency will not be sold. %')
+    st.number_input("Investment rate", key="amount_rate", value=5.0,
+                    help='Which part of amount will be invested.%', format='%.3f')
 
 df = load_data(
     symbol=st.session_state.ticker
@@ -36,19 +37,19 @@ df = load_data(
 norm_result = analyze_robot_trading(df,
                                     CincoRobot,
                                     amount=float(st.session_state.amount),
-                                    buy_rate=float(st.session_state.buy_rate),
-                                    profit_rate=float(st.session_state.profit_rate),
-                                    save_rate=float(st.session_state.save_rate),
-                                    amount_rate=float(st.session_state.amount_rate),
+                                    buy_rate=1 - float(st.session_state.buy_rate) / 100,
+                                    profit_rate=1 + float(st.session_state.profit_rate) / 100,
+                                    save_rate=float(st.session_state.save_rate) / 100,
+                                    amount_rate=float(st.session_state.amount_rate) / 100,
                                     )
 
 reversed_result = analyze_robot_trading(df.sort_index(ascending=False).copy(),
                                         CincoRobot,
                                         amount=float(st.session_state.amount),
-                                        buy_rate=float(st.session_state.buy_rate),
-                                        profit_rate=float(st.session_state.profit_rate),
-                                        save_rate=float(st.session_state.save_rate),
-                                        amount_rate=float(st.session_state.amount_rate),
+                                        buy_rate=1 - float(st.session_state.buy_rate) / 100,
+                                        profit_rate=1 + float(st.session_state.profit_rate) / 100,
+                                        save_rate=float(st.session_state.save_rate) / 100,
+                                        amount_rate=float(st.session_state.amount_rate) / 100,
                                         )
 
 st.title('Crypto-looser strategy simulator!')
@@ -99,3 +100,25 @@ st.title(f'¡¡¡Pure Margin: {pure_margin:.2%} !!!', help="Price change margin.
 st.title("Normal Strategy")
 st.line_chart(norm_result['df'], x="Date", y=["Amount", "Value", "Total"])
 st.dataframe(norm_result['df'], use_container_width=True)
+
+st.markdown('''
+The cryptocurrency trading simulation program operates as follows:
+
+1. **Initialization**: An investor starts with an initial sum (:blue-background[initial amount]) that they're willing to spend on cryptocurrency purchases.
+
+2. **Price Tracking**: The program continuously tracks cryptocurrency prices. If the price of the cryptocurrency drops by a predefined percentage (:blue-background[Buy rate], for example, 5%), the program automatically executes a purchase.
+
+3. **Investments**: The sum that the investor spends on a purchase is calculated as :blue-background[amount] * :blue-background[investment rate]. In other words, the investor uses a fixed share of their current capital for each purchase.
+
+4. **Sale**: If the price of the cryptocurrency rises by a predetermined percentage (:blue-background[profit rate]), the program automatically sells all the cryptocurrency purchased in the last transaction.
+
+5. **Save Rate**: A certain portion of the total sales revenue (:blue-background[save rate]) is withheld from the sum received from the sale. The remainder becomes available again for investing (purchases).
+
+6. **Reorientation**: After each sale, the program still tracks prices relative to the previous purchase price. If all deals were closed (i.e. all purchased assets were sold), the program tracks prices relative to the current market price.
+
+7. **Simulation Limit**: The trading simulation is limited to 1000 days or less. After this period, the simulation will end, and the final investment and profit values will be calculated.
+
+8. **Inverted Data Testing**: The simulation also tests its functionality on inverted data. This implies that if the profitability of the strategy is only due to a rising price, it will show a loss in a falling market, indicating the need for parameter adjustments.
+
+In summary, this program strives to maximize the investor's profit by automatically buying when prices drop and selling when prices rise. A key aspect of the strategy is the use of fixed percentage rates to determine points of purchase and sale, and the amounts for purchase and sale. The simulation period is limited to ensure the feasibility and manageability of the trading strategy. Importantly, the strategy is also tested on inverted data to ensure its robustness against different market conditions.
+''')
