@@ -27,7 +27,7 @@ import ccxt
 
 def get_ccxt_df(symbol="BTC/USDT", timeframe='1d', limit=1000):
     # Instantiate the exchange
-    exchange = ccxt.binance({
+    exchange = ccxt.bybit({
         "timeout": 30000,
         "rateLimit": 2000,
     })
