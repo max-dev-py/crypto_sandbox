@@ -33,6 +33,8 @@ df = load_data(
     symbol=st.session_state.ticker
 )
 
+st.write(df)
+
 norm_result = analyze_robot_trading(df,
                                     CincoRobot,
                                     amount=float(st.session_state.amount),
