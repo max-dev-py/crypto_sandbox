@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-from test import test
 from dummy_robot.price_fetcher import get_df
+from dummy_robot.strategy_tester import test
+from dummy_robot.cinco import CincoRobot
 
 st.set_page_config(page_title='Crypto-looser strategy simulator!',
                    # page_icon=None,
@@ -34,6 +35,7 @@ df = load_data(
 )
 
 norm_result = test(df,
+                   CincoRobot,
                    amount=float(st.session_state.amount),
                    buy_rate=float(st.session_state.buy_rate),
                    profit_rate=float(st.session_state.profit_rate),
@@ -42,6 +44,7 @@ norm_result = test(df,
                    )
 
 reversed_result = test(df.sort_index(ascending=False).copy(),
+                       CincoRobot,
                        amount=float(st.session_state.amount),
                        buy_rate=float(st.session_state.buy_rate),
                        profit_rate=float(st.session_state.profit_rate),
