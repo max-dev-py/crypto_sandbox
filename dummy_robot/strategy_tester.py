@@ -44,8 +44,11 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
     total_value = robot.get_total_assets()
     quantity = robot.get_quantity()
     result = {'amount': amount, 'investment': investment, 'profit': profit, 'total_value': total_value,
-              'margin': margin, 'yield': (margin / days) * 365, 'modified_margin': modified_margin,
-              'modified_yield': modified_margin / days * 365, 'days': days, 'current_amount': robot.amount,
+              'margin': margin,
+              'yield': (margin / (days if days > 0 or 1)) * 365,
+              'modified_margin': modified_margin,
+              'modified_yield': modified_margin / (days if days > 0 or 1) * 365,
+              'days': days, 'current_amount': robot.amount,
               'quantity': quantity, 'price': (total_value - robot.amount) / (quantity or 1), 'min_amount': min_amount,
               'max_amount': max_amount, 'min_total': min_total, 'max_total': max_total,
               'from': min([_.date for _ in robot.deals]), 'to': max([_.date for _ in robot.deals]),
