@@ -13,9 +13,8 @@ st.set_page_config(page_title='Crypto-looser strategy simulator!',
                    )
 
 
-@st.cache_data  # 👈 Add the caching decorator
+# @st.cache_data  # 👈 Add the caching decorator
 def load_data(symbol):
-    # df = pd.read_pickle('prices.pickle')
     df = get_df(symbol=symbol)
     return df
 
