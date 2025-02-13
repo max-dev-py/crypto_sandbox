@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 from dummy_robot.price_fetcher import get_df
-from dummy_robot.strategy_tester import test
+from dummy_robot.strategy_tester import analyze_robot_trading
 from dummy_robot.cinco import CincoRobot
 
 st.set_page_config(page_title='Crypto-looser strategy simulator!',
@@ -34,23 +34,23 @@ df = load_data(
     symbol=st.session_state.ticker
 )
 
-norm_result = test(df,
-                   CincoRobot,
-                   amount=float(st.session_state.amount),
-                   buy_rate=float(st.session_state.buy_rate),
-                   profit_rate=float(st.session_state.profit_rate),
-                   save_rate=float(st.session_state.save_rate),
-                   amount_rate=float(st.session_state.amount_rate),
-                   )
+norm_result = analyze_robot_trading(df,
+                                    CincoRobot,
+                                    amount=float(st.session_state.amount),
+                                    buy_rate=float(st.session_state.buy_rate),
+                                    profit_rate=float(st.session_state.profit_rate),
+                                    save_rate=float(st.session_state.save_rate),
+                                    amount_rate=float(st.session_state.amount_rate),
+                                    )
 
-reversed_result = test(df.sort_index(ascending=False).copy(),
-                       CincoRobot,
-                       amount=float(st.session_state.amount),
-                       buy_rate=float(st.session_state.buy_rate),
-                       profit_rate=float(st.session_state.profit_rate),
-                       save_rate=float(st.session_state.save_rate),
-                       amount_rate=float(st.session_state.amount_rate),
-                       )
+reversed_result = analyze_robot_trading(df.sort_index(ascending=False).copy(),
+                                        CincoRobot,
+                                        amount=float(st.session_state.amount),
+                                        buy_rate=float(st.session_state.buy_rate),
+                                        profit_rate=float(st.session_state.profit_rate),
+                                        save_rate=float(st.session_state.save_rate),
+                                        amount_rate=float(st.session_state.amount_rate),
+                                        )
 
 st.title('Crypto-looser strategy simulator!')
 

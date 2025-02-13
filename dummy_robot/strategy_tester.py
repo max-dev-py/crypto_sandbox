@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def test(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.05, save_rate=0, amount_rate=0.05):
+def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.05, save_rate=0, amount_rate=0.05):
     print(df)
     min_amount, max_amount = amount, amount
     min_total, max_total = amount, amount
@@ -36,7 +36,7 @@ def test(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.05, save_rate=0, 
                 }
             )
 
-    days = abs((robot.deals[-1].date - robot.deals[0].date).days)
+    days = abs((robot.deals[-1].date - robot.deals[0].date).days) if robot.deals else 0
     investment = amount - min_amount
     profit = robot.get_total_assets() - amount
     margin = profit / amount
