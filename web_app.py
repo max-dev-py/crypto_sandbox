@@ -23,12 +23,12 @@ with st.sidebar:
     st.header("Assumptions:")
     st.text_input("Ticker", key="ticker", value="BTC/USDT", help='Crypto ticker')
     st.number_input("Initial amount", key="amount", value=10000, help='Money amount')
-    st.number_input("Buy rate", key="buy_rate", value=5.0, help='Buy rate.%', format='%.3f')
-    st.number_input("Profit rate", key="profit_rate", value=5.0, help='Profit rate%', format='%.3f')
-    st.number_input("Save rate", key="save_rate", value=10.0, format='%.3f',
+    st.number_input("Buy rate", key="buy_rate", value=5.0, help='Buy rate.%', format='%.2f')
+    st.number_input("Profit rate", key="profit_rate", value=5.0, help='Profit rate%', format='%.2f')
+    st.number_input("Save rate", key="save_rate", value=10.0, format='%.2f', step=0.1,
                     help='Which part of crypto-currency will not be sold. %')
     st.number_input("Investment rate", key="amount_rate", value=5.0,
-                    help='Which part of amount will be invested.%', format='%.3f')
+                    help='Which part of amount will be invested.%', format='%.2f', step=0.1)
 
 df = load_data(
     symbol=st.session_state.ticker
