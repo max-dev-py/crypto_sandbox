@@ -15,6 +15,7 @@ class Deal:
 
 
 class Robot(object):
+    price = 0.0
 
     def __init__(self, *args, **kwargs):
         self.amount = kwargs['amount']
