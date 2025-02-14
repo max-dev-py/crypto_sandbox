@@ -7,6 +7,7 @@ from dummy_robot.cinco import CincoRobot
 
 st.set_page_config(page_title='Crypto-looser strategy simulator!',
                    # page_icon=None,
+                   page_icon=":crypto:",
                    layout="wide",
                    initial_sidebar_state="auto",
                    menu_items=None
@@ -25,7 +26,7 @@ with st.sidebar:
     st.number_input("Initial amount", key="amount", value=10000, help='Money amount')
     st.number_input("Buy rate", key="buy_rate", value=5.0, help='Buy rate.%', format='%.2f')
     st.number_input("Profit rate", key="profit_rate", value=5.0, help='Profit rate%', format='%.2f')
-    st.number_input("Save rate", key="save_rate", value=10.0, format='%.2f', step=0.1,
+    st.number_input("Save rate", key="save_rate", value=5.0, format='%.2f', step=0.1,
                     help='Which part of crypto-currency will not be sold. %')
     st.number_input("Investment rate", key="amount_rate", value=5.0,
                     help='Which part of amount will be invested.%', format='%.2f', step=0.1)
@@ -98,7 +99,8 @@ st.title(f'¡¡¡Pure Margin: {pure_margin:.2%} !!!', help="Price change margin.
 # norm_result['df']
 
 st.title("Normal Strategy")
-st.line_chart(norm_result['df'], x="Date", y=["Amount", "Value", "Total"])
+st.area_chart(norm_result['df'], x="Date", y=["Amount", "Value",], stack=True)
+st.line_chart(norm_result['df'], use_container_width=True, x="Date", y="Price")
 st.dataframe(norm_result['df'], use_container_width=True)
 
 st.markdown('''
