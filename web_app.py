@@ -78,12 +78,12 @@ cols[0].write(f'Modified Margin: {norm_result['modified_margin']:.2%}')
 cols[1].write(f'Modified Margin: {reversed_result['modified_margin']:.2%}')
 cols[0].markdown(f'Modified Yield: :blue-background[{norm_result['modified_yield']:.2%}]')
 cols[1].markdown(f'Modified Yield: :blue-background[{reversed_result['modified_yield']:.2%}]')
-cols[0].write(f'Quantity: {norm_result["quantity"]:.2f} price {norm_result['price']:,.2f}')
-cols[1].write(f'Quantity: {reversed_result["quantity"]:.2f} price {reversed_result['price']:,.2f}')
-cols[0].write(f'Min amount: {norm_result["min_amount"]:.2f} Max amount {norm_result['max_amount']:,.2f}')
-cols[1].write(f'Min amount: {reversed_result["min_amount"]:.2f} Max amount {reversed_result['max_amount']:,.2f}')
-cols[0].write(f'Min total: {norm_result["min_total"]:.2f} Max total {norm_result['max_total']:,.2f}')
-cols[1].write(f'Min total: {reversed_result["min_total"]:.2f} Max total {reversed_result['max_total']:,.2f}')
+cols[0].write(f'Quantity: {norm_result["quantity"]:,.2f} price {norm_result['price']:,.2f}')
+cols[1].write(f'Quantity: {reversed_result["quantity"]:,.2f} price {reversed_result['price']:,.2f}')
+cols[0].write(f'Min amount: {norm_result["min_amount"]:,.2f} Max amount {norm_result['max_amount']:,.2f}')
+cols[1].write(f'Min amount: {reversed_result["min_amount"]:,.2f} Max amount {reversed_result['max_amount']:,.2f}')
+cols[0].write(f'Min total: {norm_result["min_total"]:,.2f} Max total {norm_result['max_total']:,.2f}')
+cols[1].write(f'Min total: {reversed_result["min_total"]:,.2f} Max total {reversed_result['max_total']:,.2f}')
 cols[0].write(f'Deals: {norm_result['deals_count']}')
 cols[1].write(f'Deals: {reversed_result['deals_count']}')
 cols[0].write(f'From: {norm_result['from'].date()} to: {norm_result['to'].date()}')
@@ -92,7 +92,6 @@ cols[1].write(f'From: {reversed_result['from'].date()} to: {reversed_result['to'
 first_price = norm_result['df'].Price.iloc[0]
 last_price = norm_result['df'].Price.iloc[-1]
 pure_margin = (last_price - first_price) / first_price
-st.title(f'¡¡¡Pure Margin: {pure_margin:.2%} !!!', help="Price change margin.")
 # st.write(f'First price: {first_price:.2f}')
 # st.write(f'Last price: {last_price:.2f}')
 
@@ -100,6 +99,7 @@ st.title(f'¡¡¡Pure Margin: {pure_margin:.2%} !!!', help="Price change margin.
 
 st.title("Normal Strategy")
 st.area_chart(norm_result['df'], x="Date", y=["Amount", "Value",], stack=True)
+st.title(f'¡¡¡Pure Margin: {pure_margin:.2%} !!!', help="Price change margin.")
 st.line_chart(norm_result['df'], use_container_width=True, x="Date", y="Price")
 st.dataframe(norm_result['df'], use_container_width=True)
 
