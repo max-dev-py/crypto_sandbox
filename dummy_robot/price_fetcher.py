@@ -25,15 +25,16 @@ def get_df(symbol="BTCUSDT", interval="1d", limit=1000):
 
 import ccxt
 
+
 def get_ccxt_df(symbol="BTC/USDT", timeframe='1d', limit=1000):
     # Instantiate the exchange
-    exchange = ccxt.whitebit({
+    exchange = ccxt.whitebit({ #whitebit
         "timeout": 30000,
         "rateLimit": 2000,
     })
 
     # Fetch OHLCV data
-    data = exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
+    data = exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
 
     # Create DataFrame
     df = pd.DataFrame(data, columns=[

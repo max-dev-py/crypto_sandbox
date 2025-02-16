@@ -15,14 +15,31 @@ st.set_page_config(page_title='Crypto-looser strategy simulator!',
 
 
 @st.cache_data  # 👈 Add the caching decorator
-def load_data(symbol):
-    df = get_ccxt_df(symbol=symbol)
+def load_data(symbol, timeframe="1d", limit=1000):
+    df = get_ccxt_df(symbol=symbol, timeframe=timeframe, limit=limit)
     return df
 
 
-with st.sidebar:
+if 'ticker' not in st.session_state:
+    st.session_state.ticker = "BTC/USDT"
+
+if 'timeframe' not in st.session_state:
+    st.session_state.timeframe = "1d"
+
+if 'price_limit' not in st.session_state:
+    st.session_state.price_limit = 1000
+
+df = load_data(
+    symbol=st.session_state.ticker,
+    timeframe=st.session_state.timeframe,
+    limit=int(st.session_state.price_limit)
+)
+
+with (st.sidebar):
     st.header("Assumptions:")
-    st.text_input("Ticker", key="ticker", value="BTC/USDT", help='Crypto ticker')
+    st.text_input("Ticker", key="ticker", help='Crypto ticker')
+    st.radio("Time-frame", ['1d', '1h'], key="timeframe", help='Price frequency', )
+    st.number_input("Price limit", key="price_limit", help='Price limit', step=1)
     st.number_input("Initial amount", key="amount", value=10000, help='Money amount')
     st.number_input("Buy rate", key="buy_rate", value=5.0, help='Buy rate.%', format='%.2f')
     st.number_input("Profit rate", key="profit_rate", value=5.0, help='Profit rate%', format='%.2f')
@@ -30,12 +47,24 @@ with st.sidebar:
                     help='Which part of crypto-currency will not be sold. %')
     st.number_input("Investment rate", key="amount_rate", value=5.0,
                     help='Which part of amount will be invested.%', format='%.2f', step=0.1)
+    start_date = pd.to_datetime(
+        st.date_input(
+            "Choose first investment date:",
+            df.timestamp.min(),
+            min_value=df.timestamp.min(),
+            max_value=df.timestamp.max(),
+        )
+    )
+    end_date = pd.to_datetime(
+        st.date_input(
+            "Choose finish investment date:",
+            df.timestamp.max(),
+            min_value=df.timestamp.min(),
+            max_value=df.timestamp.max(),
+        )
+    )
 
-df = load_data(
-    symbol=st.session_state.ticker
-)
-
-norm_result = analyze_robot_trading(df,
+norm_result = analyze_robot_trading(df[df.timestamp >= start_date][df.timestamp <= end_date],
                                     CincoRobot,
                                     amount=float(st.session_state.amount),
                                     buy_rate=1 - float(st.session_state.buy_rate) / 100,
@@ -44,14 +73,23 @@ norm_result = analyze_robot_trading(df,
                                     amount_rate=float(st.session_state.amount_rate) / 100,
                                     )
 
-reversed_result = analyze_robot_trading(df.sort_index(ascending=False).copy(),
-                                        CincoRobot,
-                                        amount=float(st.session_state.amount),
-                                        buy_rate=1 - float(st.session_state.buy_rate) / 100,
-                                        profit_rate=1 + float(st.session_state.profit_rate) / 100,
-                                        save_rate=float(st.session_state.save_rate) / 100,
-                                        amount_rate=float(st.session_state.amount_rate) / 100,
-                                        )
+reversed_df = df.copy()
+reversed_df['close'] = pd.Series(df['close'].values[::-1], index=df.index)
+
+reversed_result = analyze_robot_trading(
+    reversed_df[reversed_df.timestamp >= start_date][reversed_df.timestamp <= end_date],
+    # df[df.timestamp >= start_date].sort_index(ascending=False).copy(),
+    CincoRobot,
+    amount=float(st.session_state.amount),
+    buy_rate=1 - float(st.session_state.buy_rate) / 100,
+    profit_rate=1 + float(st.session_state.profit_rate) / 100,
+    save_rate=float(st.session_state.save_rate) / 100,
+    amount_rate=float(st.session_state.amount_rate) / 100,
+)
+
+df_total = pd.DataFrame({'Total': norm_result['df'].Total,
+                         'Reversed Total': reversed_result['df'].Total,
+                         'Date': norm_result['df'].Date})
 
 st.title('Crypto-looser strategy simulator!')
 
@@ -95,12 +133,19 @@ pure_margin = (last_price - first_price) / first_price
 # st.write(f'First price: {first_price:.2f}')
 # st.write(f'Last price: {last_price:.2f}')
 
-# norm_result['df']
-
 st.title("Normal Strategy")
-st.area_chart(norm_result['df'], x="Date", y=["Amount", "Value",], stack=True)
+st.area_chart(norm_result['df'], x="Date", y=["Amount", "Value", ], stack=True)
+
+st.title("Normal&Reversed Strategy Comparison")
+st.line_chart(df_total, use_container_width=True, x="Date", y=["Total", "Reversed Total"])
+
 st.title(f'¡¡¡Pure Margin: {pure_margin:.2%} !!!', help="Price change margin.")
-st.line_chart(norm_result['df'], use_container_width=True, x="Date", y="Price")
+st.line_chart(
+    df[df.timestamp >= start_date][df.timestamp <= end_date], use_container_width=True,
+    x="timestamp",
+    y="close"
+)
+
 st.dataframe(norm_result['df'], use_container_width=True)
 
 st.markdown('''

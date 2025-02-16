@@ -3,7 +3,6 @@ import datetime
 
 
 def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.05, save_rate=0, amount_rate=0.05):
-    print(df)
     min_amount, max_amount = amount, amount
     min_total, max_total = amount, amount
 
@@ -26,7 +25,7 @@ def analyze_robot_trading(df, Robot, amount=10000, buy_rate=0.95, profit_rate=1.
                 max_total = robot.get_total_assets()
             new_df.append(
                 {
-                    'Date': data.timestamp.date(),
+                    'Date': data.timestamp,
                     'Price': float(data.close),
                     'Amount': robot.amount,
                     'Quantity': robot.get_quantity(),
